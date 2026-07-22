@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sign-Up Page</title>
+        <link rel="stylesheet" href="./Signup.css">
+    </head>
+    <body>
+        <div class="container">
+            <div class="signup-container">
+                <h1>Sign Up</h1>
+                <form action="" method="POST">
+                    <div class="info">
+                        <label for="username">Username:</label><br>
+                        <input type="text" id="username" name="username" required><br><br>
+
+                        <label for="DOB">Date of Birth:</label><br>
+                        <input type="date" id="DOB" name="DOB" required><br><br>
+
+                        <label for="email">Email:</label><br>                    
+                        <input type="email" id="email" name="email" placeholder="example@email.com" required><br><br>
+                    </div>
+                    <div class="info">
+                        <label for="password">Password:</label><br>
+                        <input type="text" id="password" name="password" required><br><br>
+
+                        <label for="age">Age:</label><br>
+                        <input type="number" id="age" name="age" min="18" disabled><br><br>
+
+                        <label for="telephone">Telephone number:</label><br>
+                        <input type="tel" id="telephone" name="telephone" required><br><br>
+                    </div>    
+                    
+                    <div class="gender">
+                        <label for="female">Gender:</label><br>
+                        <input type="radio" name="gender" id="female" value="female" required>
+                        <label for="female">Female</label>
+                        <input type="radio" name="gender" id="male" value="male" required>
+                        <label for="male">Male</label> 
+                    </div>
+                    <br>
+                    <button type="submit">Sign Up</button>
+                </form>
+            </div>
+            <img class="signup-image" src="./Photos/Signin.png" alt="Signing in">
+        </div>
+    </body>
+</html>

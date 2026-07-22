@@ -1,0 +1,85 @@
+
+.container{
+    display: flex;          
+    flex-direction: row;   
+    align-items: center;       
+    justify-content: center;  
+    gap: 40px;                 
+    width: 900px;
+    max-width: 95%;         
+    padding: 20px;   
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+h1{
+    text-align: center;
+    color: white;
+}
+
+.signup-image {
+    width: 350px;
+    height: auto;
+}
+
+.signup-container {
+    width: fit-content;
+    padding: 10px;
+}
+
+.info {
+    padding: 15px;
+    display: inline-block;
+    width: fit-content;
+}
+
+.gender {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: -15px;
+}
+
+button {
+  background-color: rgba(137, 43, 226, 0.582);
+  border-radius: 5px;
+  border-width: 1px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  font-family: serif;
+  margin-right: auto;
+  margin-left: auto;
+  display: block;
+  color: white;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgb(146, 96, 193);
+}
+
+label {
+    color: white;
+}
+
+input {
+  border-radius: 5px;
+  padding: 8px 12px;     
+}
+
+body {
+    background-image: url("Photos/images.jpg");
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+}
+
+input {
+    background-color:rgb(222, 196, 241);
+}
+
+
