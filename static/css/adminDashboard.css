@@ -49,7 +49,7 @@ button:hover {
 }
 
 body {
-    background-image: url("Photos/images1.jpg");
+    background-image: url("../uploads/images1.jpg");
     background-size: cover;
     min-height: 100vh;
     overflow-y: hidden;
