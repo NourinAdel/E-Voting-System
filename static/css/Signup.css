@@ -82,4 +82,24 @@ input {
     background-color:rgb(222, 196, 241);
 }
 
+a:visited {
+  color: rgb(15, 15, 126);
+}
+
+a:hover {
+  transform: translateY(-2px);
+  display: inline-block;
+  color: black;
+}
+
+a {
+  transition: transform 0.2s ease;
+}
+
+p {
+  color: white;
+  display: inline-block;
+  padding-left: 25%;
+}
+
 
