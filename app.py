@@ -39,8 +39,9 @@ def forgot_password():
             # Create serializer using secret key.
             serializer = URLSafeTimedSerializer(app.secret_key)
             
+            salt = os.environ.get('SECURITY_PASSWORD_SALT')
             # Generate token and mix in the salt for password.
-            token = serializer.dumps(email, salt = 'password-reset-salt')
+            token = serializer.dumps(email, salt = salt)
             reset_url = f"http://127.0.0.1:5000/reset_password/{token}"
 
             sender_email = os.environ.get('MAIL_USERNAME')
@@ -63,9 +64,10 @@ def reset_token(token):
     serializer = URLSafeTimedSerializer(app.secret_key)
     
     try:
+        salt = os.environ.get('SECURITY_PASSWORD_SALT')
         # Try to decode the token. 
         # max_age=3600 means the token expires after 1 hour (3600 seconds).
-        email = serializer.loads(token, salt='password-reset-salt', max_age=3600)
+        email = serializer.loads(token, salt=salt, max_age=3600)
     except:
         # If the token is expired, tampered with, or invalid, stop possible attack.
         flash("The reset link is invalid or has expired.", "error")
