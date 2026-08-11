@@ -124,13 +124,12 @@ def signUp():
     username = data.get('username')
     password = data.get('password')
     user_dob = data.get('dob')
-    user_age = data.get('age')
     email = data.get('email')
     phone = data.get('phone')
     gender = data.get('gender')
 
     #check if all fields were provided
-    required_fields = [username, password, user_dob, user_age, email, phone, gender]
+    required_fields = [username, password, user_dob, email, phone, gender]
     if any(field is None or field == '' for field in required_fields):
         return jsonify({"success": False, "message": "All fields are required."}), 400
 
