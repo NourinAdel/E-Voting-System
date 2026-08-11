@@ -9,7 +9,7 @@
         <div class="container">
             <div class="signup-container">
                 <h1>Sign Up</h1>
-                <form action="" method="POST">
+                <form id = "signupForm" action="" method="POST">
                     <div class="info">
                         <label for="username">Username:</label><br>
                         <input type="text" id="username" name="username" required><br><br>
@@ -25,16 +25,17 @@
                         <input type="password" id="password" name="password" required><br><br>
 
                         <label for="age">Age:</label><br>
-                        <input type="number" id="age" name="age" min="18" disabled><br><br>
+                        <input type="number" id="age" name="age" min="13" readonly><br><br>
 
                         <label for="telephone">Telephone number:</label><br>
                         <input type="tel" id="telephone" name="telephone" required><br><br>
                     </div>    
                     
                     <div class="gender">
-                        <label for="female">Gender:</label><br>
+                        <span>Gender:</span><br>
                         <input type="radio" name="gender" id="female" value="female" required>
                         <label for="female">Female</label>
+    
                         <input type="radio" name="gender" id="male" value="male" required>
                         <label for="male">Male</label> 
                     </div>
@@ -45,5 +46,6 @@
             </div>
             <img class="signup-image" src="../static/uploads/Signin.png" alt="Signing in">
         </div>
+        <script src="../static/js/script.js"></script>
     </body>
 </html>
