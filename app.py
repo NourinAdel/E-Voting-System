@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, jsonify, url_for
+from flask import Flask, render_template, request, flash, redirect, url_for, jsonify
 from database import db
 from dotenv import load_dotenv
 import models
@@ -6,6 +6,7 @@ from models import User
 import os
 from itsdangerous import URLSafeTimedSerializer
 from email_services import send_email
+from datetime import datetime, date
 
 load_dotenv()
 
@@ -112,6 +113,65 @@ def signup():
 @app.route('/adminDashboard.html', methods=['GET', 'POST'])
 def admin():
     return render_template('adminDashboard.html')
+def calculate_age(born_date):
+    today = date.today()
+    return today.year - born_date.year - ((today.month, today.day) < (born_date.month, born_date.day))
+
+@app.route('/api/signUp', methods=['POST'])
+def signUp():
+    data = request.get_json()
+
+    username = data.get('username')
+    password = data.get('password')
+    user_dob = data.get('dob')
+    user_age = data.get('age')
+    email = data.get('email')
+    phone = data.get('phone')
+    gender = data.get('gender')
+
+    #check if all fields were provided
+    required_fields = [username, password, user_dob, user_age, email, phone, gender]
+    if any(field is None or field == '' for field in required_fields):
+        return jsonify({"success": False, "message": "All fields are required."}), 400
+
+    #confirm unique username, email and phone number
+    existing_username = User.query.filter_by(username = username).first()
+    if existing_username:
+        return jsonify({"success": False, "message": "Username already taken."}), 409
+
+    existing_email = User.query.filter_by(email = email).first()
+    if existing_email:
+        return jsonify({"success": False, "message": "Email is already registered."}), 409
+
+    existing_phone = User.query.filter_by(phone_number = phone).first()
+    if existing_phone:
+        return jsonify({"success": False, "message": "Email is already registered"}), 409
+
+    #TO-DO password hashing and verification
+
+    try:
+        new_user = User(
+            username = username,
+            password = password,
+            DOB = user_dob,
+            email = email,
+            phone_number = phone,
+            gender = gender
+        )
+
+        db.session.add(new_user)
+        db.session.commit()
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Database error: {e}")
+        return jsonify({"success": False, "message": "Database error."}), 500
+
+    return jsonify({"success": True, "message": "Registration successful!"}), 201
+
+@app.route('/login', methods=['GET'])
+def login():
+    return render_template('login.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
