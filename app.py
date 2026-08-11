@@ -101,9 +101,23 @@ def reset_token(token):
     
     # Token is valid.
     if request.method == 'POST':
-        # TO-DO: Add the database update and password hashing logic here
-        pass
+        data = request.get_json()
+        new_password = data.get('password')
         
+        user = User.query.filter_by(email=email).first()
+
+        if user:
+            user.password = generate_password_hash(new_password + os.environ.get('PASSWORD_PEPPER'))
+            db.session.commit()
+            return jsonify({
+                "status": "success",
+                "redirect_url": "/"
+            })
+        else:
+            return jsonify({
+                "status": "error", 
+                "message": "User not found."
+            })
     # Render the HTML form
     return render_template('resetPassword.html')
 
