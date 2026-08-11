@@ -24,9 +24,33 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def Login():
-    return render_template('login.html')
+    if request.method == "POST":
+        data = request.get_json()
+        username = data.get('username')
+        plain_pass = data.get('password')
+
+        user = User.query.filter_by(username=username).first() 
+        if user and user.password == plain_pass:
+            if user.role == "Admin":
+                return jsonify({
+                    "status": "success",
+                    "redirect_url": "/adminDashboard.html"
+                })
+            else:
+                return jsonify({
+                    "status": "success",
+                    "redirect_url": "/userDashboard.html" # TO-DO: replace this later if it's different
+                })
+
+        else:
+            return jsonify({
+                "status": "error",
+                "message": "Please check your login details and try again."
+            })
+    else:
+        return render_template('login.html')
 
 @app.route('/resetRequest.html', methods=['GET', 'POST'])
 def forgot_password():
@@ -86,6 +110,9 @@ def reset_token(token):
 def signup():
     return render_template('Signup.html')
 
+@app.route('/adminDashboard.html', methods=['GET', 'POST'])
+def admin():
+    return render_template('adminDashboard.html')
 def calculate_age(born_date):
     today = date.today()
     return today.year - born_date.year - ((today.month, today.day) < (born_date.month, born_date.day))
