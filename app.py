@@ -7,6 +7,7 @@ import os
 from itsdangerous import URLSafeTimedSerializer
 from email_services import send_email
 from datetime import datetime, date
+from werkzeug.security import generate_password_hash, check_password_hash
 
 load_dotenv()
 
@@ -32,7 +33,7 @@ def Login():
         plain_pass = data.get('password')
 
         user = User.query.filter_by(username=username).first() 
-        if user and user.password == plain_pass:
+        if user and check_password_hash(user.password, plain_pass + os.environ.get('PASSWORD_PEPPER')):
             if user.role == "Admin":
                 return jsonify({
                     "status": "success",
@@ -146,12 +147,10 @@ def signUp():
     if existing_phone:
         return jsonify({"success": False, "message": "Email is already registered"}), 409
 
-    #TO-DO password hashing and verification
-
     try:
         new_user = User(
             username = username,
-            password = password,
+            password = generate_password_hash(password + os.environ.get('PASSWORD_PEPPER')),
             DOB = user_dob,
             email = email,
             phone_number = phone,
