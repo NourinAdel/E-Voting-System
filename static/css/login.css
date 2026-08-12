@@ -100,7 +100,7 @@ p {
 }
 
 input {
-    background-color:rgb(222, 196, 241);
+  background-color:rgb(222, 196, 241);
 }
 
 /* Styling for Flask Flash Messages */

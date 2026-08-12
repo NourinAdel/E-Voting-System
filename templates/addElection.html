@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Add Election</title>
+        <link rel="stylesheet" href="../static/css/addElection.css">
+    </head>
+    <body>
+        <h1>Add Election</h1>
+        <form id="election-form" class="election-form" action="" method="POST" enctype="multipart/form-data">
+            <div class="container">
+                <div class="information">
+                    <label for="name">Election Name:</label><br>
+                    <input id="name" type="text" required>
+                    <br><br>
+
+                    <label for="description">Description:</label><br>
+                    <textarea 
+                    id="description" 
+                    name="description" 
+                    rows="5" 
+                    cols="40" 
+                    placeholder="Enter detailed description here..." 
+                    required></textarea>
+                    <br><br>
+
+                    <label for="date">End date:</label><br>
+                    <input type="date" id="date" required><br><br>
+
+                    <div class="type">
+                        <span>Type:</span><br>
+                        <input type="radio" id="poll" name="type" value="Poll" required>
+                        <label for="poll">Poll</label>
+
+                        <input type="radio" id="election" name="type" value="Election" required>
+                        <label for="election">Election</label>
+                    </div>
+                </div>
+
+                <div class="preview-box">
+                    <label for="image_input">Select Election Image:</label><br>
+                    <input type="file" id="image_input" name="image" accept="image/*" required><br><br><br>
+
+                    <span id="placeholder" class="placeholder-text">No Image Selected</span><br>
+                    <img id="imagePreview" alt="Election Image Preview"><br><br><br>
+                </div>
+            </div>
+            <button type="submit" id="submitBtn">Create Election</button>
+        </form>
+    </body>
+
+</html>

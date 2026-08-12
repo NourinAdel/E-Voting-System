@@ -21,9 +21,11 @@ class Election(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
-    start_date = db.Column(db.DateTime, nullable=False)
     end_date = db.Column(db.DateTime, nullable=False)
     status = db.Column(db.Enum('ongoing', 'completed', name='election_status'), nullable=False)
+    type = db.Column(db.Enum('Poll', 'Election', name='election_type'), nullable=False)
+    description = db.Column(db.String(200), nullable=False)
+    image_path = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
 class Candidate(db.Model):
