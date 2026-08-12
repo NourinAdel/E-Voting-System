@@ -1,14 +1,15 @@
 .add {
-    margin-right: 15px;
-    margin-left: 5px;
-    width: 48%;
+    width: 45%;
     height: 80%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .view {
-    width: 48%;
+    width: 45%;
     height: 90%;
-    margin-left: 20px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 img {
@@ -24,12 +25,8 @@ p {
 
 h1 {
     text-align: left;
-    margin-top: -5px;
-    margin-bottom: -5px;
     padding-bottom: 10px;
     padding-left: 10px;
-    padding-right: 890px;
-    display: inline-block;
 }
 
 button {
@@ -58,5 +55,19 @@ body {
 }
 
 .logout {
-    padding: 10px;
+    padding: 8px;
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 5px;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  width: 96vw;
+  box-sizing: border-box;
 }
