@@ -44,9 +44,9 @@ class Voter_History(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     election_id = db.Column(db.Integer, db.ForeignKey('election.id'), nullable=False)
-    commitment_hash = db.Column(db.String(64), nullable=False)
-    encrypted_payload = db.Column(db.Text, nullable=False)
-    voted_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    candidate_hash = db.Column(db.String(64), nullable=False)
+    candidate_encrypted = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     is_verified = db.Column(db.Boolean, default=False)
 
     __table_args__ = (
@@ -61,7 +61,7 @@ class Election_Result_History(db.Model):
     candidate_id = db.Column(db.Integer, db.ForeignKey('candidate.id'), nullable=False)
     is_winner = db.Column(db.Boolean, default=False)
     final_vote_count = db.Column(db.Integer, default=0)
-    closed_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    image_path = db.Column(db.String(200), nullable=False)
 
 class Election_Candidate(db.Model):
     __tablename__ = 'election_candidate'
@@ -69,8 +69,7 @@ class Election_Candidate(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     election_id = db.Column(db.Integer, db.ForeignKey('election.id'), nullable=False)
     candidate_id = db.Column(db.Integer, db.ForeignKey('candidate.id'), nullable=False)
-    votes = db.Column(db.Integer, default=0)
-
+    
     __table_args__ = (
     db.UniqueConstraint('election_id', 'candidate_id', name='unique_election_candidate'),
 )
