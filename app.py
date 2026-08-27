@@ -159,7 +159,10 @@ def signUp():
 
     existing_phone = User.query.filter_by(phone_number = phone).first()
     if existing_phone:
-        return jsonify({"success": False, "message": "Email is already registered"}), 409
+        return jsonify({"success": False, "message": "Phone is already registered"}), 409
+
+    if not phone.isdigit() or len(phone) != 11:
+        return jsonify({"success": False, "message": "Phone number must be exactly 11 digits."}), 400
 
     try:
         new_user = User(

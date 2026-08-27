@@ -1,6 +1,19 @@
 document.getElementById('signupForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
+    const age = parseInt(document.getElementById('age').value, 10);
+
+    if (isNaN(age) || age < 13) {
+        const errorDisplay = document.getElementById('errorMessage');
+        errorDisplay.innerText = 'You must be at least 13 years old to register.';
+        errorDisplay.style.color = "#c20000";
+            
+            setTimeout(function() {
+                errorDisplay.innerText = ""; // Erases the text after 5 seconds.
+            }, 5000);
+        return;
+    }
+
     const genderSelected = document.querySelector('input[name="gender"]:checked');
 
     const formData = {
@@ -25,10 +38,22 @@ document.getElementById('signupForm').addEventListener('submit', async function(
         if(response.ok){
             window.location.href = '/login';
         } else {
-            console.error('SignUp failed', result);
+            const errorDisplay = document.getElementById('errorMessage');
+            errorDisplay.innerText = result.message;
+            errorDisplay.style.color = "#c20000";
+            
+            setTimeout(function() {
+                errorDisplay.innerText = ""; // Erases the text after 5 seconds.
+            }, 5000);
         }
     } catch(error){
-        console.error('SignUp failed', error);
+        const errorDisplay = document.getElementById('errorMessage');
+            errorDisplay.innerText = 'Unable to connect to the server. Please try again.';
+            errorDisplay.style.color = "#c20000";
+            
+            setTimeout(function() {
+                errorDisplay.innerText = "";
+            }, 5000);
     }
 });
 
