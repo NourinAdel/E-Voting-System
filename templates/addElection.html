@@ -9,6 +9,7 @@
     <body>
         <h1>Add Election</h1>
         <form id="election-form" class="election-form" action="" method="POST" enctype="multipart/form-data">
+        <p id="errorMessage"></p>
             <div class="container">
                 <div class="information">
                     <label for="name">Election Name:</label><br>
@@ -42,12 +43,13 @@
                     <label for="image_input">Select Election Image:</label><br>
                     <input type="file" id="image_input" name="image" accept="image/*" required><br><br><br>
 
-                    <span id="placeholder" class="placeholder-text">No Image Selected</span><br>
+                    <span id="placeholder" class="placeholder-text">Image Selected:</span><br><br>
                     <img id="imagePreview" alt="Election Image Preview"><br><br><br>
                 </div>
             </div>
             <button type="submit" id="submitBtn">Create Election</button>
         </form>
+        <script src="../static/js/addElection.js"></script>
     </body>
 
 </html>

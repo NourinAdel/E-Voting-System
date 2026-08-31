@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from enum import Enum
 from database import db
 
@@ -21,7 +21,7 @@ class Election(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
-    end_date = db.Column(db.DateTime, nullable=False)
+    end_date = db.Column(db.Date, nullable=False)
     status = db.Column(db.Enum('ongoing', 'completed', name='election_status'), nullable=False)
     type = db.Column(db.Enum('Poll', 'Election', name='election_type'), nullable=False)
     description = db.Column(db.String(200), nullable=False)

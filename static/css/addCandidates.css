@@ -73,3 +73,19 @@ textarea {
     padding: 8px 12px; 
     resize: none;
 }
+
+hr {
+    width: 70vw;
+    padding: 0px 50px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: block;
+    border-style: groove;
+    border-color: grey;
+}
+
+#imagePreview {
+    max-width: 30vw;
+    max-height: 20vh;
+    border: solid;
+}

@@ -2,16 +2,22 @@ from flask import Flask, render_template, request, flash, redirect, url_for, jso
 from database import db
 from dotenv import load_dotenv
 import models
-from models import User
+from models import User, Candidate, Election, Election_Candidate
 import os
 from itsdangerous import URLSafeTimedSerializer
 from email_services import send_email
 from datetime import datetime, date
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
+import traceback
 
 load_dotenv()
 
 app = Flask(__name__)
+
+UPLOAD_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static', 'uploads')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 app.secret_key = os.environ.get('FLASK_SECRET_KEY')
 if not app.secret_key:
@@ -187,6 +193,124 @@ def signUp():
 @app.route('/login', methods=['GET'])
 def login():
     return render_template('login.html')
+
+@app.route('/addElection', methods=['GET', 'POST'])
+def add_election():
+    if request.method == 'GET':
+        return render_template('addElection.html')
+    try:
+        name = request.form.get('name', '').strip()
+        description = request.form.get('description', '').strip()
+        date_str = request.form.get('date', '').strip()
+        election_type = request.form.get('type')
+        picture_file = request.files.get('picture')
+
+        if not name or not date_str or not election_type or not description or not picture_file:
+            return jsonify({"message": "Please fill in all required fields."}), 400
+
+        filename = None
+        if picture_file and picture_file.filename != '':
+            filename = secure_filename(f"election_{int(datetime.utcnow().timestamp())}_{picture_file.filename}")
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            picture_file.save(filepath)
+
+        new_election = Election(
+            name = name,
+            description = description,
+            image_path = filename,
+            end_date = date_str,
+            type = election_type,
+            status = 'ongoing'
+        )
+
+        db.session.add(new_election)
+        db.session.commit()
+
+        return jsonify({
+            "status": "success",
+            "election_id": new_election.id
+        }), 201
+
+    except Exception as e:
+        db.session.rollback()
+        print("====== BACKEND CRASH TRACEBACK ======")
+        traceback.print_exc()
+        print("=====================================")
+        return jsonify({"message": f"Server error: {str(e)}"}), 500
+
+
+@app.route('/addCandidates', methods=['POST', 'GET'])
+def add_candidates():
+    if request.method == 'GET':
+        election_id = request.args.get('election_id')
+        return render_template('addCandidates.html', election_id=election_id)
+
+    try:
+        election_id = request.form.get('election_id')
+        if not election_id:
+            return jsonify({"error": "Missing election ID."}), 400
+
+        election = Election.query.filter_by(id=election_id).first()
+        if not election:
+            return jsonify({"error": "Election not found."}), 404
+    
+        names = request.form.getlist('names[]')
+        descriptions = request.form.getlist('descriptions[]')
+        images = request.files.getlist('images[]')
+
+        if not(2 <= len(names) <= 5):
+            return jsonify({"error", "You must submit between 2 and 5 candidates."}), 400
+
+        added_count = 0
+
+        for i in range(len(names)):
+            cleaned_name = names[i].strip()
+            cleaned_desc = descriptions[i].strip() if i < len(descriptions) else ""
+            img_file = images[i] if i < len(images) else None
+
+            filename = "default.png"
+            if img_file and img_file.filename != '':
+                filename = secure_filename(f"cand_{election.id}_{i}_{img_file.filename}")
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                img_file.save(filepath)
+
+            # 1. Check/create Candidate record (attributes: name, description, image_path)
+            candidate = Candidate.query.filter_by(name=cleaned_name, description=cleaned_desc).first()
+            if not candidate:
+                candidate = Candidate(
+                    name=cleaned_name,
+                    description=cleaned_desc,
+                    image_path=filename
+                )
+                db.session.add(candidate)
+                db.session.flush()  # Populates candidate.id
+
+            # 2. Prevent enrolling in the same election twice
+            is_enrolled = Election_Candidate.query.filter_by(
+                election_id=election.id,
+                candidate_id=candidate.id
+            ).first()
+
+            if not is_enrolled:
+                link = Election_Candidate(
+                    election_id=election.id,
+                    candidate_id=candidate.id
+                )
+                db.session.add(link)
+                added_count += 1
+
+        db.session.commit()
+
+        return jsonify({
+            "status": "success",
+            "message": f"Successfully added {added_count} candidate(s)."
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
+    
 
 if __name__ == '__main__':
     app.run(debug=True)
