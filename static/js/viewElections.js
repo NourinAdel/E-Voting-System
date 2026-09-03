@@ -1,7 +1,3 @@
-document.getElementById('create-election').addEventListener("click", () => {
-    window.location.href = '/addElection';
-});
-
 document.addEventListener("DOMContentLoaded", () => {
     const dialog = document.getElementById("modal");
     const logoutBtn = document.getElementById("logoutBtn");
@@ -37,4 +33,3 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
-

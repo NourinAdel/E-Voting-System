@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>View Elections</title>
+        <link rel="stylesheet" href="../static/css/viewElections.css">
+    </head>
+    <body>
+        <div class="top">
+            <h1 class="title">Welcome!</h1>
+            <button type="button" id="logoutBtn" class="logoutBtn">Logout</button>
+        </div>
+        <dialog id="modal">
+            <p>Are you sure you want to logout?</p>
+            <button type="button" id="yesBtn" class="yesBtn">Yes</button>
+            <button type="button" id="noBtn" class="noBtn">No</button>
+        </dialog>
+        <hr>
+        <br>
+        <div id="elections-container" class="elections-container">
+            {% for election in elections%}
+                <div id="election-card" class="election-card">
+                    <div class="details">
+                        <img class="image" src="{{ url_for('static', filename='uploads/' + election.image_path)}}" alt="{{election.name}}">
+                    </div>
+                        <div class="details">
+                        <h3>Election Title: {{election.name}}</h3>
+                        <p>Election Description: {{election.description}}</p>
+                        <span>Closes on: {{election.end_date}}</span>
+                    </div>
+                    <div class="details">
+                        <a href="/vote/{{election.id}}">Vote Now!</a>
+                    </div>
+                </div>
+            {% else %}
+                <p>No active elections or polls at this time.</p>
+            {% endfor %}
+            <hr>
+        </div>
+        <script src="../static/js/viewElections.js" defer></script>
+    </body>
+</html>

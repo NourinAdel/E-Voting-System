@@ -1,0 +1,91 @@
+.elections-container {
+    border-style: solid;
+    border-radius: 10px;
+    padding: 15px;
+    max-width: 80vw;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.election-card {
+    padding: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  width: 80vw;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.image {
+    max-width: 30vw;
+    max-height: 30vh;
+    display: block;
+}
+
+.details {
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.details:first-of-type {
+    margin-right: auto;
+}
+
+.details:last-of-type {
+    margin-left: auto;
+    text-align: left;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+    border: solid;
+    padding: 15px;
+    border-radius: 15px;
+    border-width: 2px;
+    font-size: 20px;
+}
+
+a:hover {
+    color: rgba(133, 9, 216, 0.763);
+    border-color: rgba(133, 9, 216, 0.763);
+}
+
+button {
+    padding: 10px;
+    border-radius: 10px;
+    transition: transform 1s ease;
+    background-color: rgba(133, 9, 216, 0);
+    border-color: black;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 20px;
+}
+
+button:hover {
+    transform: translateY(-7px);
+}
+
+body {
+    background-image: url("../uploads/viewElectionsImg.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+dialog {
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+}

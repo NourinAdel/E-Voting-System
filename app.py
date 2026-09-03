@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, url_for, jsonify
+from flask import Flask, render_template, request, flash, redirect, url_for, jsonify, session
 from database import db
 from dotenv import load_dotenv
 import models
@@ -48,7 +48,7 @@ def Login():
             else:
                 return jsonify({
                     "status": "success",
-                    "redirect_url": "/userDashboard.html" # TO-DO: replace this later if it's different
+                    "redirect_url": "/viewElections"
                 })
 
         else:
@@ -310,6 +310,34 @@ def add_candidates():
         db.session.rollback()
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
+
+@app.route('/viewElections')
+def view_elections():
+    today = date.today()
+
+    expired = Election.query.filter(
+        Election.status == 'ongoing',
+        Election.end_date <= today
+    ).all()
+
+    if expired:
+        for election in expired:
+            election.status = 'completed'
+        db.session.commit()
+
+    active = Election.query.filter(
+        Election.status == 'ongoing',
+        Election.end_date > today
+    ).all()
+
+    return render_template('viewElections.html', elections=active)
+
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    session.clear()
+    if request.method == 'POST':
+        return jsonify({"status": "success"}), 200
+    return redirect(url_for('login'))
     
 
 if __name__ == '__main__':
