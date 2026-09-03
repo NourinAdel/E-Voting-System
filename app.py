@@ -40,6 +40,9 @@ def Login():
 
         user = User.query.filter_by(username=username).first() 
         if user and check_password_hash(user.password, plain_pass + os.environ.get('PASSWORD_PEPPER')):
+            
+            session['user_id'] = user.id # Save user's ID
+            
             if user.role == "Admin":
                 return jsonify({
                     "status": "success",
@@ -330,7 +333,10 @@ def view_elections():
         Election.end_date > today
     ).all()
 
-    return render_template('viewElections.html', elections=active)
+    user_id = session.get('user_id')
+    current_user = User.query.get(user_id)
+
+    return render_template('viewElections.html', elections=active, user=current_user)
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
