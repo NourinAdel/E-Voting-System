@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>View Election Candidates</title>
+        <link rel="stylesheet" href="../static/css/viewElections.css">
+    </head>
+    <body>
+        <div class="top">
+            <h1 class="title">Voting in: {{ election.name }}</h1>
+            <button type="button" id="logoutBtn" class="logoutBtn">Logout</button>
+        </div>
+        <dialog id="modal">
+            <p>Are you sure you want to logout?</p>
+            <button type="button" id="yesBtn" class="yesBtn">Yes</button>
+            <button type="button" id="noBtn" class="noBtn">No</button>
+        </dialog>
+        <br>
+        <div id="elections-container" class="elections-container">
+            {% for candidate in candidates %}    
+            <div class="election-card">
+                    <div class="details">
+                        <img class="image" src="{{ url_for('static', filename='uploads/' + candidate.image_path)}}" alt="{{candidate.name}}">
+                    </div>
+                        <div class="details">
+                        <h3>{{candidate.name}}</h3>
+
+                        <p>{{candidate.description}}</p>
+                    </div>
+                    <div class="details">
+                        <button type="button" class="cast-vote-btn" data-election-id="{{ election.id }}" data-candidate-id="{{ candidate.id }}">
+                            Vote
+                        </button>
+                    </div>
+            <dialog id="modal">
+                <p>Are you sure you want to vote for {{candidate.name}}?</p>
+                <button type="button" id="yesBtn" class="yesBtn">Yes</button>
+                <button type="button" id="noBtn" class="noBtn">No</button>
+            </dialog>
+                </div>
+                <hr>
+            {% endfor %}
+        </div>
+        <script src="../static/js/viewCandidates.js" defer></script>
+    </body>
+</html>

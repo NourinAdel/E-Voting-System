@@ -338,6 +338,14 @@ def view_elections():
 
     return render_template('viewElections.html', elections=active, user=current_user)
 
+@app.route('/vote/<int:election_id>')
+def view_candidates(election_id):
+
+    current_election = Election.query.get(election_id)
+    current_candidates = Candidate.query.join(Election_Candidate, Candidate.id == Election_Candidate.candidate_id).filter(Election_Candidate.election_id == election_id).all()
+
+    return render_template('viewCandidates.html', election=current_election, candidates=current_candidates)
+
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     session.clear()
