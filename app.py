@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, url_for, jso
 from database import db
 from dotenv import load_dotenv
 import models
-from models import User, Candidate, Election, Election_Candidate
+from models import User, Candidate, Election, Election_Candidate, Voter_History
 import os
 from itsdangerous import URLSafeTimedSerializer
 from email_services import send_email
@@ -340,11 +340,50 @@ def view_elections():
 
 @app.route('/vote/<int:election_id>')
 def view_candidates(election_id):
+    current_user_id = session.get('user_id')
+
+    has_voted = Voter_History.query.filter_by(
+        user_id = current_user_id,
+        election_id = election_id
+    ).first()
 
     current_election = Election.query.get(election_id)
     current_candidates = Candidate.query.join(Election_Candidate, Candidate.id == Election_Candidate.candidate_id).filter(Election_Candidate.election_id == election_id).all()
 
-    return render_template('viewCandidates.html', election=current_election, candidates=current_candidates)
+    env_public_key = os.environ.get('RSA_PUBLIC_KEY')
+    app_public_key = env_public_key.replace('\\n', '\n')
+
+    return render_template('viewCandidates.html', election=current_election, candidates=current_candidates, has_voted=has_voted, public_key=app_public_key)
+
+@app.route('/cast_vote', methods=['POST'])
+def cast_vote():
+    current_user_id = session.get('user_id')
+    data = request.get_json()
+
+    election_id = data.get('election_id')
+    candidate_hash = data.get('commitment_hash')
+    candidate_encrypted = data.get('encrypted_payload')
+
+    has_voted = Voter_History.query.filter_by(
+        user_id = current_user_id,
+        election_id = election_id
+    ).first()
+
+    if has_voted:
+        return jsonify({"error": "You have already voted in this election!"}), 400
+
+    else:
+        new_vote = Voter_History(
+            user_id = current_user_id,
+            election_id = election_id,
+            candidate_hash = candidate_hash,
+            candidate_encrypted = candidate_encrypted,
+        )
+
+        db.session.add(new_vote)
+        db.session.commit()
+
+        return jsonify({"success": "You have successfully voted in this election!"}), 200
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
