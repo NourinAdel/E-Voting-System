@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, url_for, jso
 from database import db
 from dotenv import load_dotenv
 import models
-from models import User, Candidate, Election, Election_Candidate, Voter_History
+from models import User, Candidate, Election, Election_Candidate, Voter_History, Election_Result_History
 import os
 from itsdangerous import URLSafeTimedSerializer
 from email_services import send_email
@@ -10,6 +10,7 @@ from datetime import datetime, date
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import traceback
+from sqlalchemy import func
 
 load_dotenv()
 
@@ -391,6 +392,51 @@ def logout():
     if request.method == 'POST':
         return jsonify({"status": "success"}), 200
     return redirect(url_for('login'))
+
+@app.route('/viewResults/<int:election_id>', methods=['GET'])
+def view_results(election_id):
+    election = Election.query.get_or_404(election_id)
+
+    vote_count = func.coalesce(Election_Result_History.final_vote_count, 0).label('final_vote_count')
+    is_winner = func.coalesce(Election_Result_History.is_winner, False).label('is_winner')
+
+    raw_results = (
+        db.session.query(
+            Candidate.id,
+            Candidate.name,
+            Candidate.description,
+            Candidate.image_path,
+            vote_count,
+            is_winner
+        )
+        .join(Election_Candidate, Candidate.id == Election_Candidate.candidate_id)
+        .outerjoin(
+            Election_Result_History,
+            (Election_Candidate.candidate_id == Election_Result_History.candidate_id) &
+            (Election_Result_History.election_id == election_id)
+        )
+        .filter(Election_Candidate.election_id == election_id)
+        .order_by(vote_count.desc(), Candidate.name.asc())
+        .all()
+    )
+
+    total_votes = sum(row.final_vote_count for row in raw_results)
+
+    results = []
+    for row in raw_results:
+        percentage = round((row.final_vote_count / total_votes) * 100) if total_votes > 0 else 0
+        results.append({
+            "id": row.id,
+            "name": row.name,
+            "description": row.description,
+            "image_path": row.image_path,
+            "percentage": percentage,
+            "is_winner": row.is_winner
+        })
+
+
+    return render_template('viewResults.html', election=election, results=results)
+
     
 
 if __name__ == '__main__':

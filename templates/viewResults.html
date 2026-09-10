@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>View Results</title>
+        <link rel="stylesheet" href="../static/css/viewResults.css">
+    </head>
+    <body>
+        <div class="top">
+            <h1>Election Result</h1>
+            <h2>Showing result of: {{ election.name }}</h2>
+            <button type="button" id="logoutBtn" class="logoutBtn">Logout</button>
+        </div>
+        <dialog id="modal">
+            <p>Are you sure you want to logout?</p>
+            <button type="button" id="yesBtn" class="yesBtn">Yes</button>
+            <button type="button" id="noBtn" class="noBtn">No</button>
+        </dialog>
+        <br>
+        <div class="container">
+            {% for candidate in results %}
+                <div class="candidate-card">
+                    <div>
+                        <p>#{{ loop.index }}</p>
+                    </div>
+                    <div>
+                        <img class="image" src="{{ url_for('static', filename='uploads/' + candidate.image_path)}}" alt="{{candidate.name}}">
+                    </div>
+                    <div>
+                        <p>Candidate name: {{ candidate.name }}</p>
+                        <p>Percentage: {{ candidate.percentage }}</p>
+                    </div>
+                    <p>Candidate description: {{ candidate.description }}</p>
+                </div>
+            {% else %}
+                <p>No results available for this election.</p>
+            {% endfor %}
+        </div>
+        <button type="button" class="returnBtn">Return to Elections Page</button>
+        <script src="../static/js/viewResults.js"></script>
+    </body>
+</html>
